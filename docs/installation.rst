@@ -1,160 +1,95 @@
-.. highlight:: shell
+++++++++++++
+Installation
+++++++++++++
 
-======================
-Installation and Usage
-======================
+.. include:: installation.stable_release
 
-There are a number of possible ways to install ``dials_data``.
-From the simplest to the most involved these are:
+Development Builds
+==================
 
+Nightly build installers are available for Linux and Mac OS and may be
+downloaded from `LBL <http://cci.lbl.gov/dials/installers/>`_ or
+`Diamond <http://dials.diamond.ac.uk/diamond_builds/>`_.
+Builds for Microsoft Windows are experimental and may not work as expected.
+For instructions on compiling from source or setting up a DIALS development
+environment, see :doc:`/documentation/installation_developer`.
 
-As an end user
-^^^^^^^^^^^^^^
+.. button::
+   :text: Mac installer (OS X 10.11)
+   :link: http://dials.diamond.ac.uk/diamond_builds/dials-macosx.pkg
 
-Quite simply: You do not need to install ``dials_data``.
-It does not add any functionality to end users.
+.. button::
+   :text: Mac installer (OS X 10.6)
+   :link: http://dials.diamond.ac.uk/diamond_builds/dials-macosx-10.6.pkg
 
+.. button::
+   :text: Linux installer
+   :link: http://dials.diamond.ac.uk/diamond_builds/dials-linux-x86_64.tar.xz
 
-As a developer to run tests with ``dials_data``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. button::
+   :text: Windows archive
+   :link: http://dials.diamond.ac.uk/diamond_builds/dials-windows.zip
 
-You may want to install ``dials_data`` so that you can run regression tests locally.
-Or you might say that continuous integration should take care of this.
-Both are valid opinions.
+.. button::
+   :text: Source installer
+   :link: http://dials.diamond.ac.uk/diamond_builds/dials-source.tar.xz
 
-.. _basic-installation:
+Installation
+============
 
-However you do not need to install ``dials_data`` from source. You can simply run::
+Mac graphical binary installers
+-------------------------------
 
-    pip install -U dials_data
+We provide a graphical package installer for Mac users. Download the
+`Mac OS X 10.11 <http://dials.diamond.ac.uk/diamond_builds/dials-macosx.pkg>`_
+or
+`Mac OS X 10.6 <http://dials.diamond.ac.uk/diamond_builds/dials-macosx-10.6.pkg>`_
+installer and double click the ``.pkg`` file to start the
+graphical installer. Follow the instructions, which will install DIALS in the
+``/Applications/`` directory. To use DIALS, open a new terminal window and type,
+e.g.::
 
-or, in a cctbx/DIALS environment::
+  source /Applications/dials-dev20150903/dials_env.sh
 
-    libtbx.pip install -U dials_data
-
-This will install or update an existing installation of ``dials_data``.
-
-In a cctbx/DIALS environment you may have to do a round of
-``libtbx.configure`` or ``make reconf`` to enable the ``dials_data``
-command line utilities.
-In a normal Python environment this is not required.
-
-You can then run your tests as usual using::
-
-    pytest
-
-although, depending on the configuration of the code under test, you
-probably need to run it as::
-
-    pytest --regression
-
-to actually enable those tests depending on files from ``dials_data``.
-
-
-As a developer to write tests with ``dials_data``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Install ``dials_data`` using ``pip`` as above.
-
-If your test is written in pytest and you use the fixture provided by
-``dials_data`` then you can use regression datasets in your test by
-adding the ``dials_data`` fixture to your test, ie:
-
-.. code-block:: python
-
-    def test_accessing_a_dataset(dials_data):
-        location = dials_data("x4wide")
-
-The fixture/variable ``dials_data`` in the test is a
-``dials_data.download.DataFetcher`` instance, which can be called with
-the name of the dataset you want to access (here: ``x4wide``). If the
-files are not present on the machine then they will be downloaded.
-If either the download fails or ``--regression`` is not specified then
-the test is skipped.
-
-The return value (``location``) is a ``py.path.local`` object pointing
-to the directory containing the requested dataset.
-
-You can see a list of all available datasets by running::
-
-    dials.data list
-
-or by going through the
-`dataset definition files in the repository <https://github.com/dials/data/tree/master/dials_data/definitions>`__.
-
-If you want the tests on your project to be runnable even when
-``dials_data`` is not installed in the environment you could add a
-dummy fixture to your ``conftest.py``, for example:
-
-.. code-block:: python
-
-    import pytest
-    try:
-        import dials_data as _  # noqa: F401
-    except ImportError:
-        @pytest.fixture(scope="session")
-        def dials_data():
-            pytest.skip("Test requires python package dials_data")
+to setup the DIALS environment.
 
 
-As a developer who wants to add files to ``dials_data``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Mac and Linux binary installers
+-------------------------------
 
-Follow the steps in :doc:`/contributing` to install ``dials_data`` into a
-virtual environment.
+We provide binary ``tar.gz`` and ``tar.xz`` files for various Mac and Linux
+platforms, e.g. on Linux::
 
-You can install ``dials_data`` using ``pip`` as above *unless* you want to
-immediately use your dataset definition in tests without waiting for your
-pull request to be accepted. In this case you can follow the instructions
-in the next step.
+  wget http://dials.diamond.ac.uk/diamond_builds/dials-linux-x86_64.tar.xz
+  tar -xJf dials-linux-x86_64.tar.xz
+  cd dials-installer-dev
 
+Or on Mac::
 
-As a developer who wants to extend ``dials_data``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  curl http://dials.diamond.ac.uk/diamond_builds/dials-macosx.tar.gz > dials-macosx.tar.gz
+  tar -xzf dials-macosx.tar.gz
+  cd dials-installer-dev
 
-Have a look at the :doc:`/contributing` page.
+Then to install in the /usr/local directory (you may need to add a ``sudo``
+before the command)::
 
-Install your own fork of ``dials_data`` by running::
+  ./install
 
-    pip install -e path/to/fork
+or to install in a specified directory::
 
-in a cctbx/DIALS environment use ``libtbx.pip`` respectively, followed by
-a round of ``libtbx.configure`` or ``make reconf``.
+  ./install --prefix=/path/to/installation/directory/
 
-If you made substantial changes or updated your source copy you may also
-have to run::
+To use DIALS, open a new terminal window and type, e.g.::
 
-    python setup.py develop
-
-or in a cctbx/DIALS environment::
-
-    libtbx.python setup.py develop
-
-followed by a round of ``libtbx.configure`` or ``make reconf``.
-This will update your python package index and install/update any
-``dials_data`` dependencies if necessary.
-
-To switch back from using your checked out version to the 'official'
-version of ``dials_data`` you can uninstall it with::
-
-    pip uninstall dials_data # or
-    libtbx.pip uninstall dials_data
-
-and then reinstall it following the
-`instructions at the top of this page <basic-installation_>`__.
+  source /path/to/installation/directory/dials-dev/dials_env.sh
 
 
-Where are the regression datasets stored?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Windows installation
+--------------------
 
-In order of evaluation:
+DIALS support on Windows is currently experimental and we do not provide Windows release binaries.
 
-* If the environment variable ``DIALS_DATA`` is set and exists or can be
-  created then use that location.
-* If the file path ``/dls/science/groups/scisoft/DIALS/dials_data`` exists and is readable then
-  use this location. This is a shared directory specific to Diamond Light Source.
-* If the environment variable ``LIBTBX_BUILD`` is set and the directory
-  ``dials_data`` exists or can be created underneath that location then
-  use that.
-* Use ``~/.cache/dials_data`` if it exists or can be created.
-* Otherwise ``dials_data`` will fail with a RuntimeError.
+To use DIALS you need to unpack the .zip archive, open a command prompt,
+navigate to the dials-installer directory, and run::
+
+  dials_env
